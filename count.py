@@ -14,10 +14,10 @@ dir_path = os.path.dirname(os.path.realpath(__file__))
 dotenv_path = join(dir_path, '.env')
 load_dotenv(dotenv_path)
 
-DISCORD_TOKEN = "OTk2NTA4NDEyMTMxMTU2MDY5.GaPqZB.GvgtEe1ZcnKLHnggttil2ZFj-rl5TggltqRkDw"
+DISCORD_TOKEN = os.getenv("DISCORD_TOKEN")
 
 load_dotenv()
-TOKEN = "OTk2NTA4NDEyMTMxMTU2MDY5.GaPqZB.GvgtEe1ZcnKLHnggttil2ZFj-rl5TggltqRkDw"
+TOKEN = os.getenv("DISCORD_TOKEN")
 
 # get path to data.json file
 JSON_FILE = str(os.path.dirname(os.path.realpath(__file__))) + '/data.json'
