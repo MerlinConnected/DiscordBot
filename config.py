@@ -2,7 +2,7 @@ import os
 from dotenv import load_dotenv
 import discord
 from discord import app_commands
-from discord.ui import Select, View
+from discord.ui import Select, View, Button
 from discord.ext import commands, tasks
 from discord.ext.commands.errors import MissingPermissions
 
@@ -21,7 +21,7 @@ class aclient(discord.Client):
             await tree.sync(guild = discord.Object(id=996907904324091944))
             self.synced = True
         print("Logged")
-    
+
 client = aclient()
 tree = app_commands.CommandTree(client)
 
@@ -35,6 +35,17 @@ async def commands(interaction: discord.Interaction):
     "\n/key (Lien d'achat clé W10 Pro)",
     ephemeral=True
     )
+
+class MyView(View):
+    @discord.ui.button(label="Valider", emoji="✅")
+    async def button_callback(self, button, interaction: discord.Interaction):
+        await interaction.response.send_message("Hello")
+
+@tree.command(name = "test", description="BOUTONS!", guild=discord.Object(id=996907904324091944))
+async def test(interaction: discord.Interaction):
+    view = MyView()
+    await interaction.response.send_message("Voici les commandes", view=view)
+
 
 @tree.command(name = "cmos", description="Comment faire un clear cmos et reset sa carte mère.", guild=discord.Object(id=996907904324091944))
 async def cmos(interaction: discord.Interaction):
@@ -85,11 +96,10 @@ async def ddu(interaction: discord.Interaction):
 async def userdiag(interaction: discord.Interaction):
     await interaction.response.send_message(
     "Pour télécharger l'outil de diagnostique --> https://userdiag.com/",
-    ephemeral=True
     )
 
 @tree.command(name = "config", description="Trouver une configuration adapté à ses besoin.", guild=discord.Object(id=996907904324091944))
-async def config(ctx):
+async def config(interaction):
     budget = Select( 
         placeholder="Selectionnez votre budget",
         options=[
@@ -110,7 +120,9 @@ async def config(ctx):
 
     async def budget_callback(interaction):
         tree.data['budget'] = interaction.data["values"][0]
-        await interaction.response.send_message(f"Ton budget a été pris en compte")
+        await interaction.response.send_message(f"Ton budget a été pris en compte",
+        ephemeral=True
+        )
     
     usage = Select(
         placeholder="Selectionnez votre utilisation",
@@ -132,13 +144,18 @@ async def config(ctx):
 
     async def usage_callback(interaction):
         tree.data['usage'] = interaction.data["values"][0]
-        await interaction.response.send_message(f"Ton usage a été pris en compte")
+        await interaction.response.send_message(
+            f"Ton usage a été pris en compte",
+            ephemeral=True
+            )
 
     @tasks.loop(seconds=5)
     async def my_background_task():
         if len(tree.data) == 2 and tree.continue_to_check :
-            channel = tree.get_channel(997278764994142248)
-            await channel.send(f"Ton usage est {tree.data['usage']} avec un budget de type {tree.data['budget']}")
+            await interaction.followup.send(
+                f"Ton usage est {tree.data['usage']} avec un budget de type {tree.data['budget']}",
+                ephemeral=True
+                )
             tree.continue_to_check = False
         else : pass
 
@@ -150,7 +167,9 @@ async def config(ctx):
     view = View()
     view.add_item(budget)
     view.add_item(usage)
-    await ctx.send("Des configurations de pc mise à jour régulièrement pour vous !", view=view)
-
+    await interaction.response.send_message(
+        "Selectionnez ci dessous ce qui vous correspond et le bot vous répondra avec une config !", view=view,
+        ephemeral=True
+        )
 
 client.run(TOKEN)
