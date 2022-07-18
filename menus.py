@@ -2,13 +2,13 @@ import os
 from dotenv import load_dotenv
 import discord
 from discord.ui import Select, View
-from discord.ext import commands
+from discord.ext import commands, tasks
 
 load_dotenv() # Load the .env file
 
 TOKEN = os.getenv("DISCORD_TOKEN") # Get the token from the .env file
 
-bot = commands.Bot(command_prefix='{', intents=discord.Intents.all()) 
+bot = commands.Bot(command_prefix='{', intents=discord.Intents.all())
 
 @bot.event 
 async def on_ready(): 
@@ -16,7 +16,7 @@ async def on_ready():
     await bot.change_presence(activity=discord.Game(name="Je suis un sale connard qui marche pas")) # Change the bot's activity
 
 @bot.command()
-async def menus(ctx): 
+async def menus(ctx):
     budget = Select( 
         placeholder="Selectionnez votre budget",
         options=[
@@ -36,9 +36,8 @@ async def menus(ctx):
     )
 
     async def budget_callback(interaction):
-        if interaction.data["values"][0] == 'Petite faim':
-            await interaction.response.send_message(f"Alors comme ça on a une petite faim")
-        return interaction.data["values"][0]
+        bot.data['budget'] = interaction.data["values"][0]
+        await interaction.response.send_message(f"Ton budget a été pris en compte")
     
     usage = Select(
         placeholder="Selectionnez votre utilisation",
@@ -59,12 +58,22 @@ async def menus(ctx):
         )
 
     async def usage_callback(interaction):
-        if interaction.data["values"][0] == 'Secretaire':
-            await interaction.response.send_message(f"Alors comme ça on écrit pas vite")
+        bot.data['usage'] = interaction.data["values"][0]
+        await interaction.response.send_message(f"Ton usage a été pris en compte")
+
+    @tasks.loop(seconds=5)
+    async def my_background_task():
+        if len(bot.data) == 2 and bot.continue_to_check :
+            channel = bot.get_channel(997278764994142248)
+            await channel.send(f"Ton usage est {bot.data['usage']} avec un budget de type {bot.data['budget']}")
+            bot.continue_to_check = False
+        else : pass
 
     usage.callback = usage_callback
     budget.callback = budget_callback
-    print(budget.callback)
+    bot.continue_to_check = True
+    bot.data = {}
+    my_background_task.start()
     view = View()
     view.add_item(budget)
     view.add_item(usage)
