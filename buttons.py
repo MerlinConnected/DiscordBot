@@ -16,7 +16,7 @@ async def on_ready():
     await bot.change_presence(activity=discord.Game(name="Aide les nuls en informatique de ouf"))
 
 @bot.command()
-async def hello(ctx):
+async def config(ctx):
     button = Button(label = "Link of the first config", url="https://gaetanjestin.com", style=discord.ButtonStyle.link)
     view = View()
     view.add_item(button)
