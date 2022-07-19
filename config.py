@@ -26,14 +26,11 @@ client = aclient()
 tree = app_commands.CommandTree(client)
 
 class MyView(View):
-    @discord.ui.button(label='/config', emoji='🔧')
-    async def config_button_callback(self, interaction: discord.Interaction, button: discord.ui.Button):
-        await interaction.response.send_message('marche pas')
-
     @discord.ui.button(label='/cmos', emoji='⚙️')
     async def cmos_button_callback(self, interaction: discord.Interaction, button: discord.ui.Button):
         await interaction.response.send_message(
             'Par ici le clear CMOS --> https://www.youtube.com/watch?v=Fc0HIDKC1U0',
+            ephemeral=True
         )
 
     @discord.ui.button(label='/temp', emoji='🌡️')
@@ -49,34 +46,39 @@ class MyView(View):
             '\n- Tout laisser en auto et appuyer sur play '
             '\n- Une fois le test terminé, envoyez dans le salon discord un screen des températures de votre processeur qui se trouvent dans la partie "Monitoring" (à droite).'
             '\nExemple ici: https://imgur.com/a/5oWKVfp',
+            ephemeral=True
         )
 
     @discord.ui.button(label='/xmp', emoji='💻')
     async def xmp_button_callback(self, interaction: discord.Interaction, button: discord.ui.Button):
         await interaction.response.send_message(
             'Pour activer l\'XMP --> https://www.youtube.com/watch?v=3t6J1EiHb_w',
-        )  
+            ephemeral=True
+        )
 
     @discord.ui.button(label='/key', emoji='🔑')
     async def key_button_callback(self, interaction: discord.Interaction, button: discord.ui.Button):
         await interaction.response.send_message(
             'Une clé d\'activation Windows 10 Pro pas cher ? \nC\'est par ici ! -->  https://bit.ly/3jUPNTP'
             '\nIl ne s\'agit pas d\'une livraison instantanée donc patiente le temps que le site t\'envoie la clé par mail :slight_smile:',
+            ephemeral=True
         )
 
     @discord.ui.button(label='/ddu', emoji='💾')
     async def ddu_button_callback(self, interaction: discord.Interaction, button: discord.ui.Button):
         await interaction.response.send_message(
             'Pour faire un ddu propre suit le tuto --> https://www.youtube.com/watch?v=0L2XpBGKUa4',
+            ephemeral=True
         )
 
     @discord.ui.button(label='/userdiag', emoji='🩺')
     async def userdiag_button_callback(self, interaction: discord.Interaction, button: discord.ui.Button):
         await interaction.response.send_message(
             'Pour télécharger l\'outil de diagnostique --> https://userdiag.com/',
+            ephemeral=True
         )
 
-    @discord.ui.button(label='/ram', emoji='🩻')
+    @discord.ui.button(label='/ram', emoji='💾')
     async def ram_button_callback(self, interaction: discord.Interaction, button: discord.ui.Button):
         await interaction.response.send_message(
             'Il existe deux types majeurs de gestion de canal mémoire :'
@@ -87,7 +89,8 @@ class MyView(View):
             '\n**Le Quad Channel :**'
             '\n> Une technologie plus haut de gamme faisant fonctionner la CM avec quatre barrettes de ram ( 4x4, 4x8, 4x16, … ) mais n\'étant présente que sur certains sockets de carte mère ( 2066, TR4, … ).'
             '\n'
-            '\nÀ toi de te renseigner sur ta carte mère afin de savoir si celle-ci fonctionne en Dual ou Quad Channel.'
+            '\nÀ toi de te renseigner sur ta carte mère afin de savoir si celle-ci fonctionne en Dual ou Quad Channel.',
+            ephemeral=True
         )
 
 
@@ -163,6 +166,15 @@ async def ram(interaction: discord.Interaction):
         '\nÀ toi de te renseigner sur ta carte mère afin de savoir si celle-ci fonctionne en Dual ou Quad Channel.',
         ephemeral=True
     )
+    
+@tree.command(name = 'delete', description='Purge le nombre de messages désiré.', guild=discord.Object(id=996907904324091944))
+async def delete(interaction: discord.Interaction, amount: int):
+    await interaction.channel.purge(limit=amount)
+    await interaction.response.send_message(
+    f"Purged {amount} message",
+    ephemeral=True
+    )
+
 
 @tree.command(name = 'config', description='Trouver une configuration adapté à ses besoin.', guild=discord.Object(id=996907904324091944))
 async def config(interaction):
