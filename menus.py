@@ -3,12 +3,14 @@ from dotenv import load_dotenv
 import discord
 from discord.ui import Select, View
 from discord.ext import commands, tasks
+from collections import defaultdict
 
 load_dotenv() # Load the .env file
 
-TOKEN = os.getenv("DISCORD_TOKEN") # Get the token from the .env file
+TOKEN = os.getenv("DISCORD_TOKEN")
 
-bot = commands.Bot(command_prefix='{', intents=discord.Intents.all())
+bot = commands.Bot(command_prefix='/', intents=discord.Intents.all())
+bot.data = {}
 
 @bot.event 
 async def on_ready(): 
@@ -36,8 +38,8 @@ async def menus(ctx):
     )
 
     async def budget_callback(interaction):
-        bot.data['budget'] = interaction.data["values"][0]
-        await interaction.response.send_message(f"Ton budget a été pris en compte")
+        bot.data[ctx.author.name]['budget'] = interaction.data["values"][0]
+        await interaction.response.send_message(f"Ton budget a été pris en compte", ephemeral=True)
     
     usage = Select(
         placeholder="Selectionnez votre utilisation",
@@ -58,25 +60,29 @@ async def menus(ctx):
         )
 
     async def usage_callback(interaction):
-        bot.data['usage'] = interaction.data["values"][0]
-        await interaction.response.send_message(f"Ton usage a été pris en compte")
+        bot.data[ctx.author.name]['usage'] = interaction.data["values"][0]
+        await interaction.response.send_message(f"Ton usage a été pris en compte", ephemeral=True)
 
-    @tasks.loop(seconds=5)
+    @tasks.loop(seconds=2)
     async def my_background_task():
-        if len(bot.data) == 2 and bot.continue_to_check :
-            channel = bot.get_channel(997278764994142248)
-            await channel.send(f"Ton usage est {bot.data['usage']} avec un budget de type {bot.data['budget']}")
-            bot.continue_to_check = False
+
+        if ctx.author.name in bot.data:
+            if len(bot.data[ctx.author.name])==3  and bot.data[ctx.author.name]['continue_to_check']:
+                channel = bot.get_channel(997278764994142248)
+                await channel.send(f"Hello {ctx.author.name }, ton usage est {bot.data[ctx.author.name]['usage']} avec un budget de type {bot.data[ctx.author.name]['budget']}")
+                bot.data[ctx.author.name]['continue_to_check'] = False
+                del bot.data[ctx.author.name]
+            else: pass
         else : pass
 
     usage.callback = usage_callback
     budget.callback = budget_callback
-    bot.continue_to_check = True
-    bot.data = {}
     my_background_task.start()
     view = View()
     view.add_item(budget)
     view.add_item(usage)
+    bot.data[ctx.author.name] = {}
+    bot.data[ctx.author.name]['continue_to_check'] = True
     await ctx.send("Des configurations de pc mise à jour régulièrement pour vous !", view=view)
 
 bot.run(TOKEN)
