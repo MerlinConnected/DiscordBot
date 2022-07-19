@@ -1,0 +1,12 @@
+{
+    "roles": [
+        {
+            "react": ":handshake:",
+            "react_id": 0,
+            "role": "Membre",
+            "description": "\u25cf Vous \u00eates seul responsable des actions effectu\u00e9es sur votre ordinateur. Aucun membre de ce discord ne pourra \u00eatre mis en cause en cas de probl\u00e8mes \u00e9ventuels.\n\n\u25cf Merci de ne pas MP les membres grad\u00e9s du serveur.\n\n\u25cf Il est formellement interdit de partager des logiciels ill\u00e9gaux.\n\n\u25cf Utilisez uniquement les liens provenant des membres de confiance. Merci de signaler les liens non appropri\u00e9s aux membres grad\u00e9s du discord.\n\n\u25cf Il est strictement interdit de tenir des propos injurieux, discriminants, racistes etc. Toute personne ayant ce type de comportement n\u00e9faste se verra instantan\u00e9ment bannie du serveur sans avertissement pr\u00e9alable.\n\n\u25cf Merci de ne pas spam",
+            "role_id": 997278954031415407
+        }
+    ],
+    "role_message_id": 998888997130608640
+}
