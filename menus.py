@@ -15,7 +15,7 @@ bot.data = {}
 @bot.event 
 async def on_ready(): 
     print(f"{bot.user.name} has connected to Discord!") # Prints "Bot has connected to Discord!"
-    await bot.change_presence(activity=discord.Game(name="Je suis un sale connard qui marche pas")) # Change the bot's activity
+    await bot.change_presence(activity=discord.Game(name="Je suis un gentil bot qui fonctionne")) # Change the bot's activity
 
 @bot.command()
 async def menus(ctx):
