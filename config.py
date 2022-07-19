@@ -74,7 +74,21 @@ class MyView(View):
     async def userdiag_button_callback(self, interaction: discord.Interaction, button: discord.ui.Button):
         await interaction.response.send_message(
             'Pour télécharger l\'outil de diagnostique --> https://userdiag.com/',
-     )
+        )
+
+    @discord.ui.button(label='/ram', emoji='🩻')
+    async def ram_button_callback(self, interaction: discord.Interaction, button: discord.ui.Button):
+        await interaction.response.send_message(
+            'Il existe deux types majeurs de gestion de canal mémoire :'
+            '\n'
+            '\n**Le Dual Channel :**'
+            '\n> Il s\'agit de la technologie la plus répandue sur les cartes mère. Celle-ci met en place deux canaux d\'échange entre le processeur et la mémoire de ton pc. Il est donc plus adapté de faire fonctionner ta CM avec deux barrettes de ram ( 2x4, 2x8, 2x16, … ). À toi de te référer au manuel de ta carte mère pour savoir dans quels slots mettre les deux barrettes (souvent 2 et 4).'
+            '\n'
+            '\n**Le Quad Channel :**'
+            '\n> Une technologie plus haut de gamme faisant fonctionner la CM avec quatre barrettes de ram ( 4x4, 4x8, 4x16, … ) mais n\'étant présente que sur certains sockets de carte mère ( 2066, TR4, … ).'
+            '\n'
+            '\nÀ toi de te renseigner sur ta carte mère afin de savoir si celle-ci fonctionne en Dual ou Quad Channel.'
+        )
 
 
 @tree.command(name = 'commandes', description='Liste de toutes les commandes disponibles', guild=discord.Object(id=996907904324091944))
@@ -86,66 +100,68 @@ async def commandes(interaction: discord.Interaction):
 @tree.command(name = 'cmos', description='Comment faire un clear cmos et reset sa carte mère.', guild=discord.Object(id=996907904324091944))
 async def cmos(interaction: discord.Interaction):
     await interaction.response.send_message(
-    'Par ici le clear CMOS --> https://www.youtube.com/watch?v=Fc0HIDKC1U0',
-    ephemeral=True
+        'Par ici le clear CMOS --> https://www.youtube.com/watch?v=Fc0HIDKC1U0',
+        ephemeral=True
     )
 
 @tree.command(name = 'temperatures', description='Comment vérifier si les températures de ses composants sont acceptables.', guild=discord.Object(id=996907904324091944))
 async def temp(interaction: discord.Interaction):
     await interaction.response.send_message(
-    'Pour vérifier les températures de votre processeur :'
-    '\n- Télécharger OCCT : https://www.ocbase.com/download'
-    '\n- Fermer tous les programmes (Discord, Steam...)'
-    '\n- Lancer OCCT'
-    '\n- Aller dans l\'onglet : "Test" (colonne de gauche)'
-    '\n- Sélectionner dans la partie planning des tests : "CPU" '
-    '\n- Définir la durée du test --> 15 minutes minimum (en cliquant sur le logo infini au dessus)'
-    '\n- Tout laisser en auto et appuyer sur play '
-    '\n- Une fois le test terminé, envoyez dans le salon discord un screen des températures de votre processeur qui se trouvent dans la partie "Monitoring" (à droite).'
-    '\nExemple ici: https://imgur.com/a/5oWKVfp',
-    ephemeral=True
+        'Pour vérifier les températures de votre processeur :'
+        '\n- Télécharger OCCT : https://www.ocbase.com/download'
+        '\n- Fermer tous les programmes (Discord, Steam...)'
+        '\n- Lancer OCCT'
+        '\n- Aller dans l\'onglet : "Test" (colonne de gauche)'
+        '\n- Sélectionner dans la partie planning des tests : "CPU" '
+        '\n- Définir la durée du test --> 15 minutes minimum (en cliquant sur le logo infini au dessus)'
+        '\n- Tout laisser en auto et appuyer sur play '
+        '\n- Une fois le test terminé, envoyez dans le salon discord un screen des températures de votre processeur qui se trouvent dans la partie "Monitoring" (à droite).'
+        '\nExemple ici: https://imgur.com/a/5oWKVfp',
+        ephemeral=True
     )
 
 @tree.command(name = 'xmp', description='Comment activer l\'xmp et tirer le maximum de notre RAM.', guild=discord.Object(id=996907904324091944))
 async def xmp(interaction: discord.Interaction):
     await interaction.response.send_message(
-    'Pour activer l\'XMP --> https://www.youtube.com/watch?v=3t6J1EiHb_w',
-    ephemeral=True
+        'Pour activer l\'XMP --> https://www.youtube.com/watch?v=3t6J1EiHb_w',
+        ephemeral=True
     )
 
 @tree.command(name = 'key', description='Ou trouver une clef windows à pas trop cher.', guild=discord.Object(id=996907904324091944))
 async def key(interaction: discord.Interaction):
     await interaction.response.send_message(
-    'Une clé d\'activation Windows 10 Pro pas cher ? \nC\'est par ici ! -->  https://bit.ly/3jUPNTP'
-    '\nIl ne s\'agit pas d\'une livraison instantanée donc patiente le temps que le site t\'envoie la clé par mail :slight_smile:',
-    ephemeral=True
+        'Une clé d\'activation Windows 10 Pro pas cher ? \nC\'est par ici ! -->  https://bit.ly/3jUPNTP'
+        '\nIl ne s\'agit pas d\'une livraison instantanée donc patiente le temps que le site t\'envoie la clé par mail :slight_smile:',
+        ephemeral=True
     )
 
 @tree.command(name = 'ddu', description='Désinstaller des pilotes graphiques proprement.', guild=discord.Object(id=996907904324091944))
 async def ddu(interaction: discord.Interaction):
     await interaction.response.send_message(
-    'Pour faire un ddu propre suit le tuto --> https://www.youtube.com/watch?v=0L2XpBGKUa4',
-    ephemeral=True
+        'Pour faire un ddu propre suit le tuto --> https://www.youtube.com/watch?v=0L2XpBGKUa4',
+        ephemeral=True
     )
 
 @tree.command(name = 'userdiag', description='Faire un diagnostic poussé de sa machine.', guild=discord.Object(id=996907904324091944))
 async def userdiag(interaction: discord.Interaction):
     await interaction.response.send_message(
-    'Pour télécharger l\'outil de diagnostique --> https://userdiag.com/',
+        'Pour télécharger l\'outil de diagnostique --> https://userdiag.com/',
+        ephemeral=True
     )
 
 @tree.command(name = 'ram', description='Explication du dual channel entre autres.', guild=discord.Object(id=996907904324091944))
 async def ram(interaction: discord.Interaction):
     await interaction.response.send_message(
-    'Il existe deux types majeurs de gestion de canal mémoire :'
-    '\n'
-    '\n**Le Dual Channel :**'
-    '\n> Il s\'agit de la technologie la plus répandue sur les cartes mère. Celle-ci met en place deux canaux d\'échange entre le processeur et la mémoire de ton pc. Il est donc plus adapté de faire fonctionner ta CM avec deux barrettes de ram ( 2x4, 2x8, 2x16, … ). À toi de te référer au manuel de ta carte mère pour savoir dans quels slots mettre les deux barrettes (souvent 2 et 4).'
-    '\n'
-    '\n**Le Quad Channel :**'
-    '\n> Une technologie plus haut de gamme faisant fonctionner la CM avec quatre barrettes de ram ( 4x4, 4x8, 4x16, … ) mais n\'étant présente que sur certains sockets de carte mère ( 2066, TR4, … ).'
-    '\n'
-    '\nÀ toi de te renseigner sur ta carte mère afin de savoir si celle-ci fonctionne en Dual ou Quad Channel.'
+        'Il existe deux types majeurs de gestion de canal mémoire :'
+        '\n'
+        '\n**Le Dual Channel :**'
+        '\n> Il s\'agit de la technologie la plus répandue sur les cartes mère. Celle-ci met en place deux canaux d\'échange entre le processeur et la mémoire de ton pc. Il est donc plus adapté de faire fonctionner ta CM avec deux barrettes de ram ( 2x4, 2x8, 2x16, … ). À toi de te référer au manuel de ta carte mère pour savoir dans quels slots mettre les deux barrettes (souvent 2 et 4).'
+        '\n'
+        '\n**Le Quad Channel :**'
+        '\n> Une technologie plus haut de gamme faisant fonctionner la CM avec quatre barrettes de ram ( 4x4, 4x8, 4x16, … ) mais n\'étant présente que sur certains sockets de carte mère ( 2066, TR4, … ).'
+        '\n'
+        '\nÀ toi de te renseigner sur ta carte mère afin de savoir si celle-ci fonctionne en Dual ou Quad Channel.',
+        ephemeral=True
     )
 
 @tree.command(name = 'config', description='Trouver une configuration adapté à ses besoin.', guild=discord.Object(id=996907904324091944))
@@ -156,22 +172,26 @@ async def config(interaction):
             discord.SelectOption(
                 label='Petite faim',
                 emoji='🍟', 
-                description='De 800 à 1000€'),
+                description='De 800 à 1000€'
+            ),
             discord.SelectOption(
                 label='Grosse faim', 
                 emoji='🍔', 
-                description='De 1000 à 1500€'),
+                description='De 1000 à 1500€'
+            ),
             discord.SelectOption(
                 label='Petage de bide', 
                 emoji='🍗', 
-                description='De 1500 à 2000€')
+                description='De 1500 à 2000€'
+            )
         ]
     )
 
     async def budget_callback(interaction):
         tree.data['budget'] = interaction.data['values'][0]
-        await interaction.response.send_message(f'Ton budget a été pris en compte',
-        ephemeral=True
+        await interaction.response.send_message(
+            f'Ton budget a été pris en compte',
+            ephemeral=True
         )
     
     usage = Select(
@@ -180,24 +200,27 @@ async def config(interaction):
             discord.SelectOption(
                 label='Secretaire',
                 emoji='📝',
-                description='Bureautique simple'),
+                description='Bureautique simple'
+            ),
             discord.SelectOption(
                 label='Gamer',
                 emoji='🎮',
-                description='Tout sauf fotrnite'),
+                description='Tout sauf fotrnite'
+            ),
             discord.SelectOption(
                 label='Machine de travail',
                 emoji='🔧',
-                description='Besoin de fiabilitée')
-            ]
-        )
+                description='Besoin de fiabilitée'
+            )
+        ]
+    )
 
     async def usage_callback(interaction):
         tree.data['usage'] = interaction.data['values'][0]
         await interaction.response.send_message(
             f'Ton usage a été pris en compte',
             ephemeral=True
-            )
+        )
 
     @tasks.loop(seconds=5)
     async def my_background_task():
@@ -205,7 +228,7 @@ async def config(interaction):
             await interaction.followup.send(
                 f'Ton usage est {tree.data["usage"]} avec un budget de type {tree.data["budget"]}',
                 ephemeral=True
-                )
+            )
             tree.continue_to_check = False
         else : pass
 
