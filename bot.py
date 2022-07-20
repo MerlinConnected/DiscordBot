@@ -21,6 +21,7 @@ class aclient(discord.Client):
             await tree.sync(guild = discord.Object(id=996907904324091944))
             self.synced = True
         print('Logged')
+        await client.change_presence(activity=discord.Game(name="Je suis un gentil bot qui fonctionne"))
 
 client = aclient()
 tree = app_commands.CommandTree(client)
@@ -145,8 +146,8 @@ async def ddu(interaction: discord.Interaction):
         ephemeral=True
     )
 
-@tree.command(name = 'userdiag', description='Faire un diagnostic poussé de sa machine.', guild=discord.Object(id=996907904324091944))
-async def userdiag(interaction: discord.Interaction):
+@tree.command(name = 'diagnostic', description='Faire un diagnostic poussé de sa machine.', guild=discord.Object(id=996907904324091944))
+async def diagnostic(interaction: discord.Interaction):
     await interaction.response.send_message(
         'Pour télécharger l\'outil de diagnostique --> https://userdiag.com/',
         ephemeral=True
@@ -176,6 +177,8 @@ async def delete(interaction: discord.Interaction, amount: int):
     )
 
 
+tree.data = {}
+
 @tree.command(name = 'config', description='Trouver une configuration adapté à ses besoin.', guild=discord.Object(id=996907904324091944))
 async def config(interaction):
     budget = Select( 
@@ -200,7 +203,7 @@ async def config(interaction):
     )
 
     async def budget_callback(interaction):
-        tree.data['budget'] = interaction.data['values'][0]
+        tree.data[interaction.user.name]['budget'] = interaction.data["values"][0]
         await interaction.response.send_message(
             f'Ton budget a été pris en compte',
             ephemeral=True
@@ -228,32 +231,38 @@ async def config(interaction):
     )
 
     async def usage_callback(interaction):
-        tree.data['usage'] = interaction.data['values'][0]
+        tree.data[interaction.user.name]['usage'] = interaction.data["values"][0]
         await interaction.response.send_message(
             f'Ton usage a été pris en compte',
             ephemeral=True
         )
 
-    @tasks.loop(seconds=5)
+    @tasks.loop(seconds=2)
     async def my_background_task():
-        if len(tree.data) == 2 and tree.continue_to_check :
-            await interaction.followup.send(
-                f'Ton usage est {tree.data["usage"]} avec un budget de type {tree.data["budget"]}',
-                ephemeral=True
-            )
-            tree.continue_to_check = False
+
+
+        if interaction.user.name in tree.data:
+            if len(tree.data[interaction.user.name])==3  and tree.data[interaction.user.name]['continue_to_check']:
+                await interaction.followup.send(
+                    f'Hello {interaction.user.name }, ton usage est {tree.data[interaction.user.name]["usage"]} avec un budget de type {tree.data[interaction.user.name]["budget"]}',
+                    ephemeral=True
+                )
+                tree.data[interaction.user.name]['continue_to_check'] = False
+                del tree.data[interaction.user.name]
+            else: pass
         else : pass
 
-    usage.callback = usage_callback
+        usage.callback = usage_callback
     budget.callback = budget_callback
-    tree.continue_to_check = True
-    tree.data = {}
     my_background_task.start()
     view = View()
     view.add_item(budget)
     view.add_item(usage)
+    tree.data[interaction.user.name] = {}
+    tree.data[interaction.user.name]['continue_to_check'] = True
     await interaction.response.send_message(
-        'Selectionnez ci dessous ce qui vous correspond et le bot vous répondra avec une config !', view=view,
+        "Des configurations de pc mise à jour régulièrement pour vous !", 
+        view=view,
         ephemeral=True
     )
 
