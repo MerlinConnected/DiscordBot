@@ -1,4 +1,6 @@
+from hashlib import new
 import os
+from re import S
 from dotenv import load_dotenv
 import discord
 from discord import app_commands
@@ -178,7 +180,6 @@ async def delete(interaction: discord.Interaction, amount: int):
 
 
 tree.data = {}
-
 @tree.command(name = 'config', description='Trouver une configuration adapté à ses besoin.', guild=discord.Object(id=996907904324091944))
 async def config(interaction):
     budget = Select( 
@@ -237,14 +238,118 @@ async def config(interaction):
             ephemeral=True
         )
 
+    connectivity = Select(
+        placeholder='Connectivité que tu va use ?',
+        options=[
+            discord.SelectOption(
+                label='Ethernet',
+                emoji='🔌',
+                description='Un bon vieux simple mais fiable'
+            ),
+            discord.SelectOption(
+                label='Wifi',
+                emoji='📻',
+                description='Pas fan du bon vieux câble ?'
+            ),
+            discord.SelectOption(
+                label='Wifi & Bluetooth',
+                emoji='📡',
+                description='Pas fan des câble du tout ?'
+            )
+        ]
+    )
+
+    async def connectivity_callback(interaction):
+        tree.data[interaction.user.name]['connectivity'] = interaction.data["values"][0]
+        await interaction.response.send_message(
+            f'Ta connectivité a été pris en compte',
+            ephemeral=True
+        )
+
+    mount = Select(
+        placeholder='Qui monte le PC ?',
+        options=[
+            discord.SelectOption(
+                label='TopAchat',
+                emoji='📦',
+                description='Pas les connaissance pas de problème topachat et la pour te sauvé'
+            ),
+            discord.SelectOption(
+                label='Toi',
+                emoji='🔧',
+                description='Hop 50$ de sauves'
+            ),
+        ]
+    )
+
+    async def mount_callback(interaction):
+        tree.data[interaction.user.name]['mount'] = interaction.data["values"][0]
+        await interaction.response.send_message(
+            f'Ton option montage a été pris en compte',
+            ephemeral=True
+        )
+
+    rgb = Select(
+        placeholder='Souhaite tu du RGB ?',
+        options=[
+            discord.SelectOption(
+                label='No No Noooooo',
+                emoji='📦',
+                description='Un putain de geek'
+            ),
+            discord.SelectOption(
+                label='Léger',
+                emoji='🔧',
+                description='Ambiance clavier mécanique ta ta'
+            ),
+                        discord.SelectOption(
+                label='Discothèque',
+                emoji='🔧',
+                description='Pas de nouveau habit mais au moins ta du RGB à balle'
+            ),
+        ]
+    )
+
+    async def rgb_callback(interaction):
+        tree.data[interaction.user.name]['rgb'] = interaction.data["values"][0]
+        await interaction.response.send_message(
+            f'Ton choix RGB a été pris en compte',
+            ephemeral=True
+        )
+
+    case = Select(
+        placeholder='La taille de boitier souhaité ?',
+        options=[
+            discord.SelectOption(
+                label='Compacte (Mini-ITX)',
+                emoji='📦',
+                description='Un tout petit transportable partout'
+            ),
+            discord.SelectOption(
+                label='Moyen Tour (Micro-ATX // ATX)',
+                emoji='🔧',
+                description='90% des boitiers du marché (on te conseille cette option)'
+            ),
+            discord.SelectOption(
+                label='Grand Tour (ATX // E-ATX)',
+                emoji='🔧',
+                description='Si tu souhaite avoir un tank (on te déconseille cette option sauf très gros budget)'
+            ),
+        ]
+    )
+    async def case_callback(interaction):
+        tree.data[interaction.user.name]['case'] = interaction.data["values"][0]
+        await interaction.response.send_message(
+            f'Ton choix de boitier a été pris en compte',
+            ephemeral=True
+        )
+
     @tasks.loop(seconds=2)
     async def my_background_task():
-
-
         if interaction.user.name in tree.data:
-            if len(tree.data[interaction.user.name])==3  and tree.data[interaction.user.name]['continue_to_check']:
+            if len(tree.data[interaction.user.name])==7  and tree.data[interaction.user.name]['continue_to_check']:
                 await interaction.followup.send(
-                    f'Hello {interaction.user.name }, ton usage est {tree.data[interaction.user.name]["usage"]} avec un budget de type {tree.data[interaction.user.name]["budget"]}',
+                    f'Hello {interaction.user.name }, ton usage est {tree.data[interaction.user.name]["usage"]} avec un budget de type {tree.data[interaction.user.name]["budget"]} le tout connecté en {tree.data[interaction.user.name]["connectivity"]} la machine sera monté par {tree.data[interaction.user.name]["mount"]} tu souhaite du {tree.data[interaction.user.name]["rgb"]} RGB tu souhaite un boitier {tree.data[interaction.user.name]["case"]}',
                     ephemeral=True
                 )
                 tree.data[interaction.user.name]['continue_to_check'] = False
@@ -252,18 +357,26 @@ async def config(interaction):
             else: pass
         else : pass
 
-        usage.callback = usage_callback
+    usage.callback = usage_callback
     budget.callback = budget_callback
+    connectivity.callback = connectivity_callback
+    mount.callback = mount_callback
+    rgb.callback = rgb_callback
+    case.callback = case_callback
     my_background_task.start()
     view = View()
     view.add_item(budget)
     view.add_item(usage)
+    view.add_item(connectivity)
+    view.add_item(mount)
+    view.add_item(rgb)
+    view.add_item(case)
     tree.data[interaction.user.name] = {}
     tree.data[interaction.user.name]['continue_to_check'] = True
     await interaction.response.send_message(
-        "Des configurations de pc mise à jour régulièrement pour vous !", 
+        f"Des configurations de pc mise à jour régulièrement pour vous !", 
         view=view,
-        ephemeral=True
+        ephemeral=True,
     )
 
 client.run(TOKEN)
