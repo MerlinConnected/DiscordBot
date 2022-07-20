@@ -254,7 +254,7 @@ async def config(interaction):
             discord.SelectOption(
                 label='Wifi & Bluetooth',
                 emoji='📡',
-                description='Pas fan des câble du tout ?'
+                description='Pas fan des câbles du tout ?'
             )
         ]
     )
@@ -272,7 +272,7 @@ async def config(interaction):
             discord.SelectOption(
                 label='TopAchat',
                 emoji='📦',
-                description='Pas les connaissance pas de problème topachat et la pour te sauvé'
+                description='Pas les connaissance t\'inquiète topachat et la pour te carry'
             ),
             discord.SelectOption(
                 label='Toi',
@@ -294,17 +294,17 @@ async def config(interaction):
         options=[
             discord.SelectOption(
                 label='No No Noooooo',
-                emoji='📦',
+                emoji='🔴',
                 description='Un putain de geek'
             ),
             discord.SelectOption(
                 label='Léger',
-                emoji='🔧',
+                emoji='⚫',
                 description='Ambiance clavier mécanique ta ta'
             ),
                         discord.SelectOption(
                 label='Discothèque',
-                emoji='🔧',
+                emoji='🔵',
                 description='Pas de nouveau habit mais au moins ta du RGB à balle'
             ),
         ]
@@ -327,12 +327,12 @@ async def config(interaction):
             ),
             discord.SelectOption(
                 label='Moyen Tour (Micro-ATX // ATX)',
-                emoji='🔧',
+                emoji='📦',
                 description='90% des boitiers du marché (on te conseille cette option)'
             ),
             discord.SelectOption(
                 label='Grand Tour (ATX // E-ATX)',
-                emoji='🔧',
+                emoji='📦',
                 description='Si tu souhaite avoir un tank (on te déconseille cette option sauf très gros budget)'
             ),
         ]
@@ -362,7 +362,7 @@ async def config(interaction):
     connectivity.callback = connectivity_callback
     mount.callback = mount_callback
     rgb.callback = rgb_callback
-    case.callback = case_callback
+    #case.callback = case_callback
     my_background_task.start()
     view = View()
     view.add_item(budget)
@@ -370,7 +370,7 @@ async def config(interaction):
     view.add_item(connectivity)
     view.add_item(mount)
     view.add_item(rgb)
-    view.add_item(case)
+    #view.add_item(case)
     tree.data[interaction.user.name] = {}
     tree.data[interaction.user.name]['continue_to_check'] = True
     await interaction.response.send_message(
