@@ -10,7 +10,7 @@ from discord.ext.commands.errors import MissingPermissions
 
 load_dotenv() # Load the .env file
 
-TOKEN = os.getenv('DISCORD_TOKEN') # Get the token from the .env file
+TOKEN = 'OTk2NTA4NDEyMTMxMTU2MDY5.G_O9rk.fjQjHU_R5J2FpC9fqrrhlsSEE6fcqtSxQW9jIc' # Get the token from the .env file
 
 class aclient(discord.Client):
     def __init__(self):
@@ -205,10 +205,7 @@ async def config(interaction):
 
     async def budget_callback(interaction):
         tree.data[interaction.user.name]['budget'] = interaction.data["values"][0]
-        await interaction.response.send_message(
-            f'Ton budget a été pris en compte',
-            ephemeral=True
-        )
+        await interaction.response.defer()
     
     usage = Select(
         placeholder='Selectionnez votre utilisation',
@@ -233,10 +230,7 @@ async def config(interaction):
 
     async def usage_callback(interaction):
         tree.data[interaction.user.name]['usage'] = interaction.data["values"][0]
-        await interaction.response.send_message(
-            f'Ton usage a été pris en compte',
-            ephemeral=True
-        )
+        await interaction.response.defer()
 
     connectivity = Select(
         placeholder='Connectivité que tu va use ?',
@@ -261,10 +255,7 @@ async def config(interaction):
 
     async def connectivity_callback(interaction):
         tree.data[interaction.user.name]['connectivity'] = interaction.data["values"][0]
-        await interaction.response.send_message(
-            f'Ta connectivité a été pris en compte',
-            ephemeral=True
-        )
+        await interaction.response.defer()
 
     mount = Select(
         placeholder='Qui monte le PC ?',
@@ -284,10 +275,9 @@ async def config(interaction):
 
     async def mount_callback(interaction):
         tree.data[interaction.user.name]['mount'] = interaction.data["values"][0]
-        await interaction.response.send_message(
-            f'Ton option montage a été pris en compte',
-            ephemeral=True
-        )
+        await interaction.response.defer()
+        if len(tree.data[interaction.user.name]) == 7:
+            tree.data[interaction.user.name]['continue_to_check'] = True
 
     rgb = Select(
         placeholder='Souhaite tu du RGB ?',
@@ -312,10 +302,9 @@ async def config(interaction):
 
     async def rgb_callback(interaction):
         tree.data[interaction.user.name]['rgb'] = interaction.data["values"][0]
-        await interaction.response.send_message(
-            f'Ton choix RGB a été pris en compte',
-            ephemeral=True
-        )
+        await interaction.response.defer()
+        if len(tree.data[interaction.user.name]) == 7:
+            tree.data[interaction.user.name]['continue_to_check'] = True
 
     case = Select(
         placeholder='La taille de boitier souhaité ?',
@@ -339,17 +328,30 @@ async def config(interaction):
     )
     async def case_callback(interaction):
         tree.data[interaction.user.name]['case'] = interaction.data["values"][0]
-        await interaction.response.send_message(
-            f'Ton choix de boitier a été pris en compte',
-            ephemeral=True
-        )
+        await interaction.response.defer()
 
     @tasks.loop(seconds=2)
     async def my_background_task():
         if interaction.user.name in tree.data:
-            if len(tree.data[interaction.user.name])==7  and tree.data[interaction.user.name]['continue_to_check']:
+            if len(tree.data[interaction.user.name])==5  and tree.data[interaction.user.name]['continue_to_check'] and tree.data[interaction.user.name]['usage'] !='Gamer':
                 await interaction.followup.send(
-                    f'Hello {interaction.user.name }, ton usage est {tree.data[interaction.user.name]["usage"]} avec un budget de type {tree.data[interaction.user.name]["budget"]} le tout connecté en {tree.data[interaction.user.name]["connectivity"]} la machine sera monté par {tree.data[interaction.user.name]["mount"]} tu souhaite du {tree.data[interaction.user.name]["rgb"]} RGB tu souhaite un boitier {tree.data[interaction.user.name]["case"]}',
+                    f'Hello {interaction.user.name }, ton usage est {tree.data[interaction.user.name]["usage"]} avec un budget de type {tree.data[interaction.user.name]["budget"]} le tout connecté en {tree.data[interaction.user.name]["connectivity"]} tu souhaite un boitier {tree.data[interaction.user.name]["case"]}',
+                    ephemeral=True
+                )
+                tree.data[interaction.user.name]['continue_to_check'] = False
+                del tree.data[interaction.user.name]
+            elif len(tree.data[interaction.user.name])==5  and tree.data[interaction.user.name]['continue_to_check'] and tree.data[interaction.user.name]['usage'] =='Gamer':
+                view = View()
+                view.add_item(mount)
+                view.add_item(rgb)
+                await interaction.followup.send(
+                    f"T'es un gamer",
+                    view=view, ephemeral=True
+                )
+                tree.data[interaction.user.name]['continue_to_check'] = False
+            elif len(tree.data[interaction.user.name]) == 7 and tree.data[interaction.user.name]['continue_to_check']:
+                await interaction.followup.send(
+                    f'Hello {interaction.user.name}, ton usage est {tree.data[interaction.user.name]["usage"]} avec un budget de type {tree.data[interaction.user.name]["budget"]} le tout connecté en {tree.data[interaction.user.name]["connectivity"]} la machine sera monté par {tree.data[interaction.user.name]["mount"]} tu souhaite du {tree.data[interaction.user.name]["rgb"]} RGB tu souhaite un boitier {tree.data[interaction.user.name]["case"]}',
                     ephemeral=True
                 )
                 tree.data[interaction.user.name]['continue_to_check'] = False
@@ -362,15 +364,15 @@ async def config(interaction):
     connectivity.callback = connectivity_callback
     mount.callback = mount_callback
     rgb.callback = rgb_callback
-    #case.callback = case_callback
+    case.callback = case_callback
     my_background_task.start()
     view = View()
     view.add_item(budget)
     view.add_item(usage)
     view.add_item(connectivity)
-    view.add_item(mount)
-    view.add_item(rgb)
-    #view.add_item(case)
+    view.add_item(case)
+    if interaction.user.name in tree.data:
+        del tree.data[interaction.user.name]
     tree.data[interaction.user.name] = {}
     tree.data[interaction.user.name]['continue_to_check'] = True
     await interaction.response.send_message(
